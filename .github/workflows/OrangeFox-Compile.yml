@@ -70,6 +70,17 @@ jobs:
         cd scripts
         sudo bash setup/android_build_env.sh
       
+- name: Clone Common Device Tree (if needed)
+  run: |
+    cd ${GITHUB_WORKSPACE}/OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}
+    # 根据设备路径确定通用设备树位置
+    if [[ "${{ inputs.DEVICE_PATH }}" == *"xiaomi/Mi8937"* ]]; then
+      # 提取基础路径（去掉设备名）
+      BASE_PATH=$(dirname "${{ inputs.DEVICE_PATH }}")
+      COMMON_PATH="${BASE_PATH}/mithorium-common"
+      # 克隆通用设备树
+      git clone https://github.com/TeamWin/android_device_xiaomi_mithorium-common.git -b android-12.1 ./$COMMON_PATH
+
     - name: Set-up Manifest
       if: inputs.MANIFEST_BRANCH == '11.0' || inputs.MANIFEST_BRANCH == '12.1'
       run: |
